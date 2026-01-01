@@ -4,14 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>내 언어로 듣는 복음 - Glocal Bible</title>
-    <meta property="og:title" content="내 언어로 듣는 복음 - Glocal Bible">
-    <meta property="og:description" content="23개국 언어로 듣는 생명의 말씀. 당신의 모국어로 하나님의 사랑을 만나보세요.">
-    <meta property="og:image" content="https://jinjun-han.github.io/glocal-bible/thumbnail.jpg">
+    <title>마음을 울리는 고향의 소리 - Glocal Bible</title>
+    <meta property="og:title" content="🎧 마음을 울리는 고향의 소리">
+    <meta property="og:description" content="21개국 모국어로 듣는 생명의 말씀. 당신의 친구에게 하나님의 사랑을 선물하세요.">
+    <meta property="og:image" content="https://jinjun-han.github.io/glocal-bible/thumbnail.png">
     <meta property="og:url" content="https://jinjun-han.github.io/glocal-bible/">
     
     <style>
-        /* 깔끔하고 감성적인 디자인 */
         body {
             font-family: 'Noto Sans KR', sans-serif;
             background-color: #f4f6f9;
@@ -33,15 +32,16 @@
         }
         h1 {
             color: #2c3e50;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             margin-bottom: 10px;
+            word-break: keep-all;
         }
         p.subtitle {
             color: #7f8c8d;
-            font-size: 0.95rem;
+            font-size: 1rem;
+            line-height: 1.5;
             margin-bottom: 25px;
         }
-        /* 국가 버튼 그리드 */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -83,21 +83,21 @@
             font-size: 0.9rem;
             color: #e74c3c;
             height: 20px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Glocal Bible</h1>
-        <p class="subtitle">모든 민족이 자신의 언어로 듣는<br>하나님의 사랑</p>
+        <h1>마음을 울리는<br>고향의 소리 🌏</h1>
+        <p class="subtitle">모든 민족이 자신의 언어로 듣는<br>하나님의 따뜻한 사랑 이야기</p>
         
         <div id="grid" class="grid"></div>
         <div id="status" class="player-status"></div>
     </div>
 
     <script>
-        // 3. 언어 목록 데이터 (키르기스스탄, 타지키스탄 추가 및 오디오 파일명 매핑)
         const languages = [
             { code: 'ko', name: '한국어', flag: '🇰🇷', file: 'M56-D01-B-ko.mp3' },
             { code: 'en', name: 'English', flag: '🇺🇸', file: 'M56-D01-B-en.mp3' },
@@ -116,8 +116,9 @@
             { code: 'pk', name: 'Urdu', flag: '🇵🇰', file: 'M56-D01-B-ur.mp3' },
             { code: 'uz', name: 'Uzbek', flag: '🇺🇿', file: 'M56-D01-B-uz.mp3' },
             { code: 'kz', name: 'Kazakh', flag: '🇰🇿', file: 'M56-D01-B-kk.mp3' },
-            { code: 'ky', name: 'Kyrgyz', flag: '🇰🇬', file: 'M56-D01-B-ky.mp3' }, /* 키르기스스탄 추가 */
-            { code: 'tg', name: 'Tajik', flag: '🇹🇯', file: 'M56-D01-B-tg.mp3' }, /* 타지키스탄 추가 */
+            
+            /* 문제되는 키르기스스탄(ky), 타지키스탄(tg) 제외됨 */
+            
             { code: 'ir', name: 'Persian', flag: '🇮🇷', file: 'M56-D01-B-fa.mp3' },
             { code: 'tr', name: 'Turkish', flag: '🇹🇷', file: 'M56-D01-B-tr.mp3' },
             { code: 'ar', name: 'Arabic', flag: '🇸🇦', file: 'M56-D01-B-ar.mp3' },
@@ -128,7 +129,6 @@
         const status = document.getElementById('status');
         let currentAudio = null;
 
-        // 버튼 생성
         languages.forEach(lang => {
             const btn = document.createElement('div');
             btn.className = 'lang-btn';
@@ -139,25 +139,21 @@
         });
 
         function playAudio(fileName, langName, btnElement) {
-            // 경로 설정 (audio 폴더 안에 파일이 있다고 가정)
             const audioPath = `./audio/${fileName}`;
 
-            // 기존 오디오 정지
             if (currentAudio) {
                 currentAudio.pause();
                 currentAudio.currentTime = 0;
             }
-            // 모든 버튼 스타일 초기화
             document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('playing'));
 
-            // 새 오디오 재생
             const audio = new Audio(audioPath);
             
             audio.play()
                 .then(() => {
                     currentAudio = audio;
                     btnElement.classList.add('playing');
-                    status.textContent = `🔊 ${langName} 재생 중...`;
+                    status.textContent = `🔊 ${langName} 말씀 듣는 중...`;
                     
                     audio.onended = () => {
                         btnElement.classList.remove('playing');
