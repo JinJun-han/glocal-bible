@@ -3,116 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Glocal Bible V3.0</title>
-    <style>
-        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .container { max-width: 600px; width: 100%; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
-        
-        /* 시간대 표시 디자인 */
-        .time-display { font-size: 1.2rem; font-weight: bold; color: #fff; background: #34495e; padding: 10px 20px; border-radius: 50px; display: inline-block; margin-bottom: 20px; }
-        .time-M { background: #f1c40f; color: #000; } /* 아침 */
-        .time-N { background: #e67e22; } /* 점심 */
-        .time-E { background: #2c3e50; } /* 저녁 */
+    
+    <meta property="og:title" content="2026 Glocal Bible - 시대적 사명자의 길">
+    <meta property="og:description" content="인생을 바꾸는 25개국 생명의 말씀">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=800&q=80">
 
-        h1 { color: #2c3e50; font-size: 1.5rem; margin-bottom: 25px; }
+    <title>2026 Glocal Bible - Mission</title>
+    <style>
+        :root { --main-dark: #1a252f; --mission-red: #c0392b; --gold: #f1c40f; }
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
         
-        .verse-card { background: #f8f9fa; border-radius: 15px; padding: 25px; margin-bottom: 30px; border-left: 8px solid #3498db; min-height: 100px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; line-height: 1.6; font-weight: 500; }
+        /* 메인 컨테이너 */
+        .container { max-width: 600px; width: 100%; background: white; padding: 30px; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); text-align: center; border-top: 10px solid var(--main-dark); }
         
-        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        .lang-btn { background: white; border: 2px solid #eee; border-radius: 15px; padding: 15px 10px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; }
-        .lang-btn:hover { border-color: #3498db; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .lang-btn.active { background: #3498db; color: white; border-color: #3498db; }
-        .flag { font-size: 2rem; margin-bottom: 5px; }
-        .lang-name { font-size: 0.85rem; font-weight: bold; }
+        /* 사명자 문구 섹션 */
+        .mission-header { margin-bottom: 25px; border-bottom: 1px double #eee; padding-bottom: 20px; }
+        .mission-quote { font-size: 1.1rem; font-weight: 700; color: var(--mission-red); line-height: 1.5; margin-bottom: 10px; font-style: italic; }
+        .mission-sub { font-size: 0.9rem; color: #7f8c8d; font-weight: 500; }
+
+        .day-info { background: var(--main-dark); color: var(--gold); padding: 6px 18px; border-radius: 20px; font-weight: bold; font-size: 0.85rem; display: inline-block; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .date-display { font-size: 1.7rem; font-weight: 800; color: var(--main-dark); margin-bottom: 20px; }
+        
+        /* 시간 선택 버튼 */
+        .time-selector { display: flex; justify-content: center; gap: 8px; margin-bottom: 25px; background: #f1f2f6; padding: 6px; border-radius: 50px; }
+        .time-btn { flex: 1; padding: 14px 5px; border-radius: 40px; border: none; cursor: pointer; font-weight: bold; font-size: 0.9rem; transition: 0.3s; background: transparent; color: #95a5a6; }
+        .time-btn.active { background: var(--main-dark); color: white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+
+        /* 말씀 카드 */
+        .verse-card { 
+            background: #fffdf2; border-radius: 20px; padding: 30px; margin-bottom: 30px; 
+            border: 1px solid #eec; min-height: 140px; display: flex; flex-direction: column; align-items: center; 
+            justify-content: center; font-size: 1.25rem; line-height: 1.8; color: #2c3e50;
+            font-weight: 600; word-break: keep-all; position: relative;
+        }
+        .verse-card::before { content: '“'; position: absolute; top: 10px; left: 20px; font-size: 3rem; color: #ddd; }
+        
+        /* 언어 그리드 */
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .lang-btn { background: white; border: 1px solid #eee; border-radius: 15px; padding: 15px 5px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; }
+        .lang-btn:hover { border-color: var(--accent-color); transform: translateY(-3px); box-shadow: 0 5px 10px rgba(0,0,0,0.05); }
+        .lang-btn.active { background: #3498db; color: white; border-color: #3498db; transform: scale(1.05); }
+        .flag { font-size: 2rem; margin-bottom: 6px; }
+        .lang-name { font-size: 0.8rem; font-weight: bold; }
+
+        footer { margin-top: 30px; font-size: 0.8rem; color: #bdc3c7; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div id="time-tag" class="time-display">시간 확인 중...</div>
-        
-        <h1>Glocal Bible V3.0</h1>
-
-        <div id="verse-text" class="verse-card">
-            나라를 선택하시면<br>오늘의 성경 구절이 나옵니다.
+        <div class="mission-header">
+            <div class="mission-quote">“시대의 어둠을 밝히는 사명자로 일어서라.<br>당신의 언어가 생명이 되고, 당신의 발걸음이 역사가 된다.”</div>
+            <div class="mission-sub">2026년, 인생의 거대한 전환점이 시작됩니다.</div>
         </div>
 
-        <div class="grid" id="lang-grid">
-            </div>
+        <div class="day-info">The First Step: Day 1</div>
+        <div class="date-display">2026년 1월 1일 (목)</div>
+        
+        <div class="time-selector">
+            <button class="time-btn" onclick="setTime('M')">🌅 새벽의 사명</button>
+            <button class="time-btn" onclick="setTime('N')">☀️ 정오의 빛</button>
+            <button class="time-btn" onclick="setTime('E')">🌙 안식의 은혜</button>
+        </div>
+
+        <div id="verse-text" class="verse-card">
+            하늘의 음성이 당신을 기다립니다.<br>시간과 언어를 선택하십시오.
+        </div>
+
+        <div class="grid" id="lang-grid"></div>
+        
+        <footer>© 2026 Glocal Bible - 삶을 변화시키는 위대한 여정</footer>
     </div>
 
     <script>
-        // 1. 현재 시간 결정 (아침 M: 05~12, 점심 N: 12~18, 저녁 E: 18~05)
-        const hour = new Date().getHours();
-        let timeType = 'E';
-        let timeName = '🌙 저녁 기도 (시편 4:8)';
-        
-        if (hour >= 5 && hour < 12) {
-            timeType = 'M';
-            timeName = '🌅 아침 기도 (시편 5:3)';
-        } else if (hour >= 12 && hour < 18) {
-            timeType = 'N';
-            timeName = '☀️ 점심 말씀 (요한복음 3:16)';
+        let selectedTime = 'E';
+        let currentAudio = null;
+        let selectedLang = null;
+
+        function setTime(type) {
+            selectedTime = type;
+            const btns = document.querySelectorAll('.time-btn');
+            btns.forEach(btn => btn.classList.remove('active'));
+            if(type === 'M') btns[0].classList.add('active');
+            if(type === 'N') btns[1].classList.add('active');
+            if(type === 'E') btns[2].classList.add('active');
+            if(selectedLang) playBible(selectedLang);
         }
 
-        const timeTag = document.getElementById('time-tag');
-        timeTag.innerText = timeName;
-        timeTag.className = 'time-display time-' + timeType;
-
-        // 2. 25개국 국가 설정 (주인님의 63개 파일과 연결)
         const languages = [
-            { code: 'ko', name: '한국어', flag: '🇰🇷' },
-            { code: 'en', name: 'English', flag: '🇺🇸' },
-            { code: 'ja', name: '日本語', flag: '🇯🇵' },
-            { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
-            { code: 'zh-CN', name: '中国语', flag: '🇨🇳' },
-            { code: 'fr', name: 'Français', flag: '🇫🇷' },
-            { code: 'es', name: 'Español', flag: '🇪🇸' },
-            { code: 'pt', name: 'Português', flag: '🇵🇹' },
-            { code: 'ru', name: 'Русский', flag: '🇷🇺' },
-            { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳' },
-            { code: 'th', name: 'ไทย', flag: '🇹🇭' },
-            { code: 'id', name: 'Indonesia', flag: '🇮🇩' },
-            { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
-            { code: 'ar', name: 'العربية', flag: '🇸🇦' }
-            // 파일이 있는 다른 나라들도 여기에 계속 추가하면 버튼이 생깁니다.
+            { code: 'ko', name: '한국어', flag: '🇰🇷', verses: { M: "여호와여 아침에 주께서 나의 소리를 들으시리니 아침에 내가 주께 기도하고 바라리이다 (시편 5:3)", N: "하나님이 세상을 이처럼 사랑하사 독생자를 주셨으니 이는 그를 믿는 자마다 멸망하지 않고 영생을 얻게 하려 하심이라 (요한복음 3:16)", E: "내가 평안히 눕고 자기도 하리니 나를 안전히 살게 하시는 이는 오직 여호와이시니이다 (시편 4:8)" } },
+            { code: 'en', name: 'English', flag: '🇺🇸', verses: { M: "In the morning, Lord, you hear my voice; in the morning I lay my requests before you. (Psalm 5:3)", N: "For God so loved the world that he gave his one and only Son... (John 3:16)", E: "In peace I will lie down and sleep, for you alone, Lord, make me dwell in safety. (Psalm 4:8)" } },
+            { code: 'ja', name: '日本語', flag: '🇯🇵', verses: { M: "主よ、朝ごとに私の声を聞いてください。朝ごとに、私は御前に祈りを備え、待ち望みます。(詩篇 5:3)", N: "神は、その独り子をお与えになったほどに、世を愛された。(ヨハネ 3:16)", E: "平安のうちに私は身を横たえ、眠ります。(詩篇 4:8)" } },
+            { code: 'de', name: 'Deutsch', flag: '🇩🇪', verses: { M: "HERR, frühe wollest du meine Stimme hören... (Psalm 5:3)", N: "Denn also hat Gott die Welt geliebt... (Johannes 3:16)", E: "Ich liege und schlafe ganz mit Frieden... (Psalm 4:8)" } },
+            { code: 'zh-CN', name: '中国语', flag: '🇨🇳', verses: { M: "耶和华啊，早晨你必听我的声音... (诗篇 5:3)", N: "神爱世人，甚至将他的独生子赐给他们... (约翰福音 3:16)", E: "我必安然躺下睡觉... (诗篇 4:8)" } },
+            { code: 'fr', name: 'Français', flag: '🇫🇷', verses: { M: "Éternel! le matin tu entends ma voix...", N: "Car Dieu a tant aimé le monde...", E: "Je me couche et je m'endors en paix..." } },
+            { code: 'es', name: 'Español', flag: '🇪🇸', verses: { M: "Oh Jehová, de mañana oirás mi voz...", N: "Porque de tal manera amó Dios al mundo...", E: "En paz me acostaré, y asimismo dormiré..." } },
+            { code: 'pt', name: 'Português', flag: '🇵🇹', verses: { M: "Pela manhã ouvirás a minha voz...", N: "Porque Deus amou o mundo de tal maneira...", E: "Em paz também me deitarei e dormirei..." } },
+            { code: 'ru', name: 'Русский', flag: '🇷🇺', verses: { M: "Господи! рано услышь голос мой...", N: "Ибо так возлюбил Бог мир...", E: "Спокойно ложусь я и сплю..." } },
+            { code: 'ar', name: 'العربية', flag: '🇸🇦', verses: { M: "يا رب في الصباح تسمع صوتي...", N: "لأنه هكذا أحب الله العالم...", E: "بسلامة أضطجع بل أيضا أنام..." } },
+            { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳', verses: { M: "Đức Giê-hô-va ôi! buổi sáng Ngài sẽ nghe tiếng tôi...", N: "Vì Đức Chúa Trời yêu thương thế gian...", E: "Hỡi Đức Giê-hô-va, tôi sẽ nằm và ngủ bình an..." } },
+            { code: 'th', name: 'ไทย', flag: '🇹🇭', verses: { M: "ข้าแต่พระเจ้า ในตอนเช้าพระองค์ทรงสดับเสียงข้าพระองค์...", N: "เพราะว่าพระเจ้าทรงรักโลก...", E: "ข้าพระองค์จะเอนตัวลงนอนหลับในความสันติ..." } },
+            { code: 'id', name: 'Indonesia', flag: '🇮🇩', verses: { M: "TUHAN, pada waktu pagi Engkau mendengar suaraku...", N: "Karena begitu besar kasih Allah akan dunia ini...", E: "Dengan tenteram aku mau membaringkan diri..." } },
+            { code: 'tl', name: 'Tagalog', flag: '🇵🇭', verses: { M: "Panginoon, sa umaga ay diringgin mo ang aking tinig...", N: "Sapagka't gayon na lamang ang pagsinta ng Dios...", E: "Ako'y mahihigang may kapayapaan..." } },
+            { code: 'tr', name: 'Türkçe', flag: '🇹🇷', verses: { M: "Ya RAB, sabah sesimi duyarsın...", N: "Çünkü Tanrı dünyayı o kadar çok sevdi ki...", E: "Esenlik içinde yatar uyurum..." } },
+            { code: 'si', name: 'Sinhala', flag: '🇱🇰', verses: { M: "ස්වාමීනි, උදය කාලයේදී ඔබ මාගේ හඬ අසන සේක...", N: "මක්නිසාද දෙවියන්වහන්සේ ස්වකීය ඒකජාතක පුත්‍රයාණන්...", E: "මම සමාදානයෙන් නිදාගන්නෙමි..." } },
+            { code: 'mn', name: 'Монгол', flag: '🇲🇳', verses: { M: "Өглөөд Эзэн минь, Та миний дуу хоолойг сонсоно...", N: "Учир нь Бурхан ертөнцийг үнэхээр хайрласан...", E: "Би амар тайван хэвтэж, унтах болно..." } },
+            { code: 'uz', name: 'Oʻzbek', flag: '🇺🇿', verses: { M: "Yo Rabbiy, tongda mening ovozimni eshitasan...", N: "Zero Xudo dunyoni shunchalik sevdiki...", E: "Tinchlikda yotaman va darrov uxlab qolaman..." } },
+            { code: 'ur', name: 'Urdu', flag: '🇵🇰', verses: { M: "اے خداوند! صبح کے وقت تُو میری آواز سنے گا...", N: "کیونکہ خُدا نے دُنیا سے اَیسی مَحبت رکھی...", E: "مَیں سلامتی کے ساتھ لیٹ جاؤں گا..." } },
+            { code: 'km', name: 'Khmer', flag: '🇰🇭', verses: { M: "ឱព្រះអម្ចាស់អើយ នៅពេលព្រឹកព្រលឹម...", N: "ដ្បិតព្រះទ្រង់ស្រឡាញ់មនុស្សលោកដល់ម៉្លេះ...", E: "ទូលបង្គំនឹងដេកលក់ដោយសុខសាន្ត..." } },
+            { code: 'bn', name: 'Bengali', flag: '🇧🇩', verses: { M: "হে সদাপ্রভু, সকালে তুমি আমার রবে শুনবে...", N: "কারণ ঈশ্বর জগতকে এমন প্রেম করলেন...", E: "আমি শান্তিতে শয়ন করব ও নিদ্রা যাব..." } },
+            { code: 'ne', name: 'Nepali', flag: '🇳🇵', verses: { M: "हे परमप्रभु, बिहान तपाईंले मेરો सोर सुन्नुहुनेछ...", N: "किनभنه परमेश्वरले संसारलाई यस्तो प्रेम गर्नुभयो...", E: "म शान्तिसित ढल्किनेछु र निदाउनेछु..." } },
+            { code: 'my', name: 'Burmese', flag: '🇲🇲', verses: { M: "အိုထာဝရဘုရား၊ နံနက်အချိန်၌ အကျွန်ုပ်စကားကို...", N: "ဘုရားသခင်၏သားတော်ကို ယုံကြည်သောသူအပေါင်းတို့သည်...", E: "အကျွန်ုပ်သည် ငြိမ်သက်စွာအိပ်ပျော်ပါမည်..." } },
+            { code: 'ky', name: 'Kyrgyz', flag: '🇰🇬', verses: { M: "Оо Жараткан, эртең менен Менин үнүмдү угасыں...", N: "Ант케니 Кудай дүйнөнү ушунчалык сүйгөндүктөн...", E: "Тынчтыкта жатып уктайм..." } },
+            { code: 'lo', name: 'Lao', flag: '🇱🇦', verses: { M: "ຂ້າແດ່ພຣະອົງເຈົ້າ ເວລາເຊົ້າພຣະອົງຈະສົດັບຟັງສຽງ...", N: "ເຫດວ່າພຣະເຈົ້າຊົງຮັກໂລກຫລາຍ...", E: "ຂ້າພຣະອົງຈະນອນລົງດ້ວຍຄວາມສະຫງົບສຸກ..." } }
         ];
 
-        const grid = document.getElementById('lang-grid');
-        const verseBox = document.getElementById('verse-text');
-        let currentAudio = null;
+        function playBible(lang) {
+            selectedLang = lang;
+            const audioFile = `audio/M56-D01-${selectedTime}-${lang.code}.mp3`;
+            if (currentAudio) currentAudio.pause();
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            const verseDisplay = lang.verses[selectedTime] || "말씀을 불러오는 중입니다...";
+            document.getElementById('verse-text').innerHTML = `📖 [${lang.name}]<br>${verseDisplay}`;
+            const audio = new Audio(audioFile);
+            audio.play().then(() => { currentAudio = audio; }).catch(err => { console.log("Audio not found"); });
+        }
 
-        // 3. 버튼 생성 및 재생 로직
+        const grid = document.getElementById('lang-grid');
         languages.forEach(lang => {
             const btn = document.createElement('div');
             btn.className = 'lang-btn';
             btn.innerHTML = `<span class="flag">${lang.flag}</span><span class="lang-name">${lang.name}</span>`;
-            
-            btn.onclick = () => {
-                // 오디오 파일 이름 규칙: M56-D01-시간-국가.mp3
-                const audioFile = `audio/M56-D01-${timeType}-${lang.code}.mp3`;
-                
-                // 이전 소리 끄기
-                if (currentAudio) currentAudio.pause();
-                
-                // 버튼 강조
-                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-
-                // 말씀 텍스트 안내 (현재는 재생 중임을 표시)
-                verseBox.innerHTML = `🔔 <b>${lang.name}</b>로 말씀을 듣고 있습니다...`;
-
-                // 소리 재생
-                const audio = new Audio(audioFile);
-                audio.play().then(() => {
-                    currentAudio = audio;
-                }).catch(err => {
-                    verseBox.innerHTML = `⚠️ 오디오 파일이 없습니다.<br>(파일명: ${audioFile})`;
-                });
-            };
-            
+            btn.onclick = (event) => playBible(lang);
             grid.appendChild(btn);
         });
+
+        const h = new Date().getHours();
+        if (h >= 5 && h < 12) setTime('M');
+        else if (h >= 12 && h < 18) setTime('N');
+        else setTime('E');
     </script>
 </body>
 </html>
