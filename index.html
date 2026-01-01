@@ -3,96 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <title>마음을 울리는 고향의 소리 - Glocal Bible</title>
     <meta property="og:title" content="🎧 마음을 울리는 고향의 소리">
-    <meta property="og:description" content="21개국 모국어로 듣는 생명의 말씀. 당신의 친구에게 하나님의 사랑을 선물하세요.">
+    <meta property="og:description" content="21개국 모국어로 듣는 생명의 말씀.">
     <meta property="og:image" content="https://jinjun-han.github.io/glocal-bible/thumbnail.png">
-    <meta property="og:url" content="https://jinjun-han.github.io/glocal-bible/">
     
     <style>
-        body {
-            font-family: 'Noto Sans KR', sans-serif;
-            background-color: #f4f6f9;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .container {
-            width: 90%;
-            max-width: 600px;
-            background: white;
-            padding: 30px;
-            margin-top: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        h1 {
-            color: #2c3e50;
-            font-size: 1.6rem;
-            margin-bottom: 10px;
-            word-break: keep-all;
-        }
-        p.subtitle {
-            color: #7f8c8d;
-            font-size: 1rem;
-            line-height: 1.5;
-            margin-bottom: 25px;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 12px;
-        }
-        .lang-btn {
-            background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 12px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-            transition: all 0.2s;
-        }
-        .lang-btn:hover {
-            border-color: #3498db;
-            background-color: #f0f8ff;
-            transform: translateY(-2px);
-        }
-        .lang-btn.playing {
-            background-color: #e8f4fc;
-            border-color: #3498db;
-            color: #2980b9;
-            font-weight: bold;
-            box-shadow: 0 0 8px rgba(52, 152, 219, 0.3);
-        }
-        .flag {
-            font-size: 1.8rem;
-        }
-        .lang-name {
-            font-size: 0.9rem;
-            color: #333;
-        }
-        .player-status {
-            margin-top: 20px;
-            font-size: 0.9rem;
-            color: #e74c3c;
-            height: 20px;
-            font-weight: bold;
-        }
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f4f6f9; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; }
+        .container { width: 90%; max-width: 600px; background: white; padding: 30px; margin-top: 20px; border-radius: 15px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; font-size: 1.6rem; word-break: keep-all; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-top: 20px; }
+        .lang-btn { border: 1px solid #e0e0e0; border-radius: 10px; padding: 12px; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
+        .lang-btn:hover { background-color: #f0f8ff; border-color: #3498db; }
+        .lang-btn.playing { background-color: #e8f4fc; border-color: #3498db; color: #2980b9; font-weight: bold; }
+        .flag { font-size: 1.8rem; }
+        .player-status { margin-top: 20px; color: #e74c3c; font-weight: bold; height: 20px; }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <h1>마음을 울리는<br>고향의 소리 🌏</h1>
-        <p class="subtitle">모든 민족이 자신의 언어로 듣는<br>하나님의 따뜻한 사랑 이야기</p>
-        
+        <h1>마음을 울리는<br>고향의 소리 (수정완료) 🌏</h1>
         <div id="grid" class="grid"></div>
         <div id="status" class="player-status"></div>
     </div>
@@ -116,9 +46,7 @@
             { code: 'pk', name: 'Urdu', flag: '🇵🇰', file: 'M56-D01-B-ur.mp3' },
             { code: 'uz', name: 'Uzbek', flag: '🇺🇿', file: 'M56-D01-B-uz.mp3' },
             { code: 'kz', name: 'Kazakh', flag: '🇰🇿', file: 'M56-D01-B-kk.mp3' },
-            
-            /* 문제되는 키르기스스탄(ky), 타지키스탄(tg) 제외됨 */
-            
+            /* 키르기스, 타지키스탄 삭제됨 */
             { code: 'ir', name: 'Persian', flag: '🇮🇷', file: 'M56-D01-B-fa.mp3' },
             { code: 'tr', name: 'Turkish', flag: '🇹🇷', file: 'M56-D01-B-tr.mp3' },
             { code: 'ar', name: 'Arabic', flag: '🇸🇦', file: 'M56-D01-B-ar.mp3' },
@@ -133,36 +61,29 @@
             const btn = document.createElement('div');
             btn.className = 'lang-btn';
             btn.innerHTML = `<span class="flag">${lang.flag}</span><span class="lang-name">${lang.name}</span>`;
-            
             btn.onclick = () => playAudio(lang.file, lang.name, btn);
             grid.appendChild(btn);
         });
 
         function playAudio(fileName, langName, btnElement) {
-            const audioPath = `./audio/${fileName}`;
+            // 오디오 폴더 경로를 확실하게 잡음
+            const audioPath = `audio/${fileName}`;
 
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio.currentTime = 0;
-            }
+            if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
             document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('playing'));
 
             const audio = new Audio(audioPath);
-            
             audio.play()
                 .then(() => {
                     currentAudio = audio;
                     btnElement.classList.add('playing');
                     status.textContent = `🔊 ${langName} 말씀 듣는 중...`;
-                    
-                    audio.onended = () => {
-                        btnElement.classList.remove('playing');
-                        status.textContent = "";
-                    };
+                    audio.onended = () => { btnElement.classList.remove('playing'); status.textContent = ""; };
                 })
                 .catch(e => {
                     console.error(e);
-                    status.textContent = `⚠️ 오류: 오디오 파일(${fileName})을 찾을 수 없습니다.`;
+                    // 에러 메시지를 화면에 띄움 (어떤 파일이 없는지 확인용)
+                    status.textContent = `⚠️ 오류: ${fileName} 파일이 없습니다!`;
                 });
         }
     </script>
