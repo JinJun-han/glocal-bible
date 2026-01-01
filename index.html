@@ -1,105 +1,118 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>마음을 울리는 고향의 소리 - Glocal Bible</title>
-    <meta property="og:title" content="🎧 마음을 울리는 고향의 소리">
-    <meta property="og:description" content="21개국 모국어로 듣는 생명의 말씀.">
-    <meta property="og:image" content="https://jinjun-han.github.io/glocal-bible/thumbnail.png">
-    
+    <title>Glocal Bible V3.0</title>
     <style>
-        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f4f6f9; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; }
-        .container { width: 90%; max-width: 600px; background: white; padding: 30px; margin-top: 20px; border-radius: 15px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h1 { color: #2c3e50; font-size: 1.6rem; word-break: keep-all; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-top: 20px; }
-        .lang-btn { border: 1px solid #e0e0e0; border-radius: 10px; padding: 12px; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
-        .lang-btn:hover { background-color: #f0f8ff; border-color: #3498db; }
-        .lang-btn.playing { background-color: #e8f4fc; border-color: #3498db; color: #2980b9; font-weight: bold; }
-        .flag { font-size: 1.8rem; }
-        .player-status { margin-top: 20px; color: #e74c3c; font-weight: bold; height: 20px; }
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { max-width: 600px; width: 100%; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
+        
+        /* 시간대 표시 디자인 */
+        .time-display { font-size: 1.2rem; font-weight: bold; color: #fff; background: #34495e; padding: 10px 20px; border-radius: 50px; display: inline-block; margin-bottom: 20px; }
+        .time-M { background: #f1c40f; color: #000; } /* 아침 */
+        .time-N { background: #e67e22; } /* 점심 */
+        .time-E { background: #2c3e50; } /* 저녁 */
+
+        h1 { color: #2c3e50; font-size: 1.5rem; margin-bottom: 25px; }
+        
+        .verse-card { background: #f8f9fa; border-radius: 15px; padding: 25px; margin-bottom: 30px; border-left: 8px solid #3498db; min-height: 100px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; line-height: 1.6; font-weight: 500; }
+        
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .lang-btn { background: white; border: 2px solid #eee; border-radius: 15px; padding: 15px 10px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; }
+        .lang-btn:hover { border-color: #3498db; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .lang-btn.active { background: #3498db; color: white; border-color: #3498db; }
+        .flag { font-size: 2rem; margin-bottom: 5px; }
+        .lang-name { font-size: 0.85rem; font-weight: bold; }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <h1>마음을 울리는<br>고향의 소리 🌏</h1>
-        <div id="grid" class="grid"></div>
-        <div id="status" class="player-status"></div>
+        <div id="time-tag" class="time-display">시간 확인 중...</div>
+        
+        <h1>Glocal Bible V3.0</h1>
+
+        <div id="verse-text" class="verse-card">
+            나라를 선택하시면<br>오늘의 성경 구절이 나옵니다.
+        </div>
+
+        <div class="grid" id="lang-grid">
+            </div>
     </div>
 
     <script>
-        // 👇 파일 주소 앞에 '폴더이름/'을 붙여서 방 안을 찾게 했습니다.
+        // 1. 현재 시간 결정 (아침 M: 05~12, 점심 N: 12~18, 저녁 E: 18~05)
+        const hour = new Date().getHours();
+        let timeType = 'E';
+        let timeName = '🌙 저녁 기도 (시편 4:8)';
+        
+        if (hour >= 5 && hour < 12) {
+            timeType = 'M';
+            timeName = '🌅 아침 기도 (시편 5:3)';
+        } else if (hour >= 12 && hour < 18) {
+            timeType = 'N';
+            timeName = '☀️ 점심 말씀 (요한복음 3:16)';
+        }
+
+        const timeTag = document.getElementById('time-tag');
+        timeTag.innerText = timeName;
+        timeTag.className = 'time-display time-' + timeType;
+
+        // 2. 25개국 국가 설정 (주인님의 63개 파일과 연결)
         const languages = [
-            { code: 'ko', name: '한국어', flag: '🇰🇷', file: 'ko/M56-D01-B-ko.mp3' },
-            { code: 'en', name: 'English', flag: '🇺🇸', file: 'en/M56-D01-B-en.mp3' },
-            { code: 'zh', name: 'Chinese', flag: '🇨🇳', file: 'zh/M56-D01-B-zh.mp3' },
-            { code: 'ru', name: 'Russian', flag: '🇷🇺', file: 'ru/M56-D01-B-ru.mp3' },
-            { code: 'vn', name: 'Vietnam', flag: '🇻🇳', file: 'vi/M56-D01-B-vn.mp3' }, /* vi 폴더 */
-            { code: 'th', name: 'Thai', flag: '🇹🇭', file: 'th/M56-D01-B-th.mp3' },
-            { code: 'my', name: 'Myanmar', flag: '🇲🇲', file: 'my/M56-D01-B-my.mp3' },
-            { code: 'kh', name: 'Cambodia', flag: '🇰🇭', file: 'kh/M56-D01-B-kh.mp3' },
-            { code: 'ph', name: 'Tagalog', flag: '🇵🇭', file: 'tl/M56-D01-B-ph.mp3' }, /* tl 폴더 */
-            { code: 'id', name: 'Indonesian', flag: '🇮🇩', file: 'id/M56-D01-B-id.mp3' },
-            { code: 'mn', name: 'Mongolian', flag: '🇲🇳', file: 'mn/M56-D01-B-mn.mp3' },
-            { code: 'np', name: 'Nepali', flag: '🇳🇵', file: 'ne/M56-D01-B-np.mp3' }, /* ne 폴더 */
-            { code: 'lk', name: 'Sinhala', flag: '🇱🇰', file: 'si/M56-D01-B-si.mp3' }, /* si 폴더 */
-            { code: 'bd', name: 'Bengali', flag: '🇧🇩', file: 'bn/M56-D01-B-bn.mp3' }, /* bn 폴더 */
-            { code: 'pk', name: 'Urdu', flag: '🇵🇰', file: 'ur/M56-D01-B-ur.mp3' },
-            { code: 'uz', name: 'Uzbek', flag: '🇺🇿', file: 'uz/M56-D01-B-uz.mp3' },
-            { code: 'kz', name: 'Kazakh', flag: '🇰🇿', file: 'kk/M56-D01-B-kk.mp3' }, /* kk 폴더 */
-            
-            /* 키르기스, 타지키스탄 제외됨 */
-            
-            { code: 'ir', name: 'Persian', flag: '🇮🇷', file: 'fa/M56-D01-B-fa.mp3' }, /* fa 폴더 */
-            { code: 'tr', name: 'Turkish', flag: '🇹🇷', file: 'tr/M56-D01-B-tr.mp3' },
-            { code: 'ar', name: 'Arabic', flag: '🇸🇦', file: 'ar/M56-D01-B-ar.mp3' },
-            { code: 'jp', name: 'Japanese', flag: '🇯🇵', file: 'ja/M56-D01-B-ja.mp3' } /* ja 폴더 */
+            { code: 'ko', name: '한국어', flag: '🇰🇷' },
+            { code: 'en', name: 'English', flag: '🇺🇸' },
+            { code: 'ja', name: '日本語', flag: '🇯🇵' },
+            { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+            { code: 'zh-CN', name: '中国语', flag: '🇨🇳' },
+            { code: 'fr', name: 'Français', flag: '🇫🇷' },
+            { code: 'es', name: 'Español', flag: '🇪🇸' },
+            { code: 'pt', name: 'Português', flag: '🇵🇹' },
+            { code: 'ru', name: 'Русский', flag: '🇷🇺' },
+            { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳' },
+            { code: 'th', name: 'ไทย', flag: '🇹🇭' },
+            { code: 'id', name: 'Indonesia', flag: '🇮🇩' },
+            { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
+            { code: 'ar', name: 'العربية', flag: '🇸🇦' }
+            // 파일이 있는 다른 나라들도 여기에 계속 추가하면 버튼이 생깁니다.
         ];
 
-        const grid = document.getElementById('grid');
-        const status = document.getElementById('status');
+        const grid = document.getElementById('lang-grid');
+        const verseBox = document.getElementById('verse-text');
         let currentAudio = null;
 
+        // 3. 버튼 생성 및 재생 로직
         languages.forEach(lang => {
             const btn = document.createElement('div');
             btn.className = 'lang-btn';
             btn.innerHTML = `<span class="flag">${lang.flag}</span><span class="lang-name">${lang.name}</span>`;
             
-            // 여기서 폴더 주소를 포함한 file 정보를 넘깁니다
-            btn.onclick = () => playAudio(lang.file, lang.name, btn);
+            btn.onclick = () => {
+                // 오디오 파일 이름 규칙: M56-D01-시간-국가.mp3
+                const audioFile = `audio/M56-D01-${timeType}-${lang.code}.mp3`;
+                
+                // 이전 소리 끄기
+                if (currentAudio) currentAudio.pause();
+                
+                // 버튼 강조
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // 말씀 텍스트 안내 (현재는 재생 중임을 표시)
+                verseBox.innerHTML = `🔔 <b>${lang.name}</b>로 말씀을 듣고 있습니다...`;
+
+                // 소리 재생
+                const audio = new Audio(audioFile);
+                audio.play().then(() => {
+                    currentAudio = audio;
+                }).catch(err => {
+                    verseBox.innerHTML = `⚠️ 오디오 파일이 없습니다.<br>(파일명: ${audioFile})`;
+                });
+            };
+            
             grid.appendChild(btn);
         });
-
-        function playAudio(filePath, langName, btnElement) {
-            // 이제 filePath 안에 이미 'ko/파일이름' 처럼 폴더가 들어있습니다.
-            const audioPath = `./audio/${filePath}`;
-
-            if (currentAudio) {
-                currentAudio.pause();
-                currentAudio.currentTime = 0;
-            }
-            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('playing'));
-
-            const audio = new Audio(audioPath);
-            
-            audio.play()
-                .then(() => {
-                    currentAudio = audio;
-                    btnElement.classList.add('playing');
-                    status.textContent = `🔊 ${langName} 말씀 듣는 중...`;
-                    
-                    audio.onended = () => {
-                        btnElement.classList.remove('playing');
-                        status.textContent = "";
-                    };
-                })
-                .catch(e => {
-                    console.error(e);
-                    // 파일 경로가 틀렸는지 확인하기 위해 에러 메시지 띄움
-                    status.textContent = `⚠️ 오류: 파일(${filePath})을 찾을 수 없습니다.`;
-                });
-        }
     </script>
 </body>
 </html>
