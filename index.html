@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIGRANT 56 GLOCAL</title>
+    <style>
+        :root { --primary: #2563eb; --bg: #f8fafc; }
+        body { font-family: 'Pretendard', sans-serif; background: var(--bg); margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .container { max-width: 800px; width: 100%; background: white; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); overflow: hidden; }
+        
+        /* 헤더 */
+        .header { background: var(--primary); color: white; padding: 20px; text-align: center; }
+        .header h1 { margin: 0; font-size: 1.5rem; }
+        .header p { margin: 5px 0 0; opacity: 0.9; font-size: 0.9rem; }
+
+        /* 컨트롤 패널 (날짜/끼니) */
+        .controls { padding: 15px; background: #eff6ff; display: flex; gap: 10px; justify-content: center; align-items: center; border-bottom: 1px solid #e5e7eb; }
+        select { padding: 8px 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 1rem; }
+        
+        /* 본문 (성경 구절) */
+        .verse-box { padding: 30px 20px; text-align: center; min-height: 150px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .verse-kr { font-size: 1.4rem; font-weight: bold; color: #1e293b; margin-bottom: 15px; word-break: keep-all; line-height: 1.5; }
+        .verse-foreign { font-size: 1.2rem; color: #475569; font-style: italic; min-height: 1.2em; word-break: keep-all; }
+
+        /* 언어 선택 그리드 */
+        .lang-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; padding: 20px; background: #f1f5f9; }
+        .lang-btn {
+            background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px;
+            cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.2s;
+            text-align: left; font-size: 0.9rem; font-weight: 500;
+        }
+        .lang-btn:hover { border-color: var(--primary); transform: translateY(-2px); }
+        .lang-btn.playing { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+        /* 한국어 버튼 강조 */
+        .lang-btn.kr-btn { border: 2px solid #2563eb; background: #eff6ff; } 
+        .flag { font-size: 1.5rem; }
+        
+        #status { text-align: center; padding: 20px; color: #64748b; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>🌍 MIGRANT 56 GLOCAL</h1>
+        <p>23개국 언어 성경 암송 (V3.1)</p>
+    </div>
+
+    <div class="controls">
+        <select id="daySelect" onchange="loadVerse()"></select>
+        <select id="mealSelect" onchange="loadVerse()">
+            <option value="B">아침 (Morning)</option>
+            <option value="L">점심 (Lunch)</option>
+            <option value="D">저녁 (Dinner)</option>
+        </select>
+    </div>
+
+    <div class="verse-box">
+        <div class="verse-kr" id="text-ko">로딩 중...</div>
+        <div class="verse-foreign" id="text-target">국기를 누르면 소리가 나옵니다</div>
+    </div>
+
+    <div id="status"></div>
+    <div class="lang-grid" id="langGrid"></div>
+</div>
+
+<script>
+    const LANG_INFO = {
+        "ko": { flag: "🇰🇷", name: "한국어" },
+        "en": { flag: "🇺🇸", name: "English" },
+        "zh": { flag: "🇨🇳", name: "中文 (중국)" },
+        "vi": { flag: "🇻🇳", name: "Tiếng Việt" },
+        "th": { flag: "🇹🇭", name: "Thai" },
+        "id": { flag: "🇮🇩", name: "Indonesia" },
+        "tl": { flag: "🇵🇭", name: "Tagalog" },
+        "mn": { flag: "🇲🇳", name: "Mongolia" },
+        "si": { flag: "🇱🇰", name: "Sinhala" },
+        "uz": { flag: "🇺🇿", name: "Uzbek" },
+        "ur": { flag: "🇵🇰", name: "Urdu" },
+        "km": { flag: "🇰🇭", name: "Khmer" },
+        "bn": { flag: "🇧🇩", name: "Bengali" },
+        "ky": { flag: "🇰🇬", name: "Kyrgyz" },
+        "ne": { flag: "🇳🇵", name: "Nepali" },
+        "my": { flag: "🇲🇲", name: "Burmese" },
+        "lo": { flag: "🇱🇦", name: "Lao" },
+        "tg": { flag: "🇹🇯", name: "Tajik" },
+        "ru": { flag: "🇷🇺", name: "Russian" },
+        "ar": { flag: "🇸🇦", name: "Arabic" },
+        "es": { flag: "🇪🇸", name: "Spanish" },
+        "pt": { flag: "🇵🇹", name: "Portuguese" },
+        "fr": { flag: "🇫🇷", name: "French" }
+    };
+
+    let globalData = null;
+    let currentAudio = null;
+
+    fetch('audio/index.json')
+        .then(res => res.json())
+        .then(data => {
+            globalData = data;
+            initDaySelect();
+            loadVerse();
+            document.getElementById('status').style.display = 'none';
+        })
+        .catch(err => {
+            document.getElementById('status').innerHTML = "⚠️ 데이터를 불러오지 못했습니다.";
+            console.error(err);
+        });
+
+    function initDaySelect() {
+        const days = [...new Set(globalData.files.map(f => f.day))];
+        const daySelect = document.getElementById('daySelect');
+        daySelect.innerHTML = days.map(d => `<option value="${d}">Day ${d}</option>`).join('');
+    }
+
+    function loadVerse() {
+        if (!globalData) return;
+        
+        const day = parseInt(document.getElementById('daySelect').value);
+        const meal = document.getElementById('mealSelect').value;
+        const item = globalData.files.find(f => f.day === day && f.meal === meal);
+        
+        if (!item) return;
+
+        document.getElementById('text-ko').innerText = item.texts['ko'] || "";
+        document.getElementById('text-target').innerText = "국기를 누르면 소리가 나옵니다";
+
+        const grid = document.getElementById('langGrid');
+        grid.innerHTML = "";
+
+        // 이제 한국어도 포함해서 모든 버튼을 만듭니다
+        Object.keys(item.audio).forEach(lang => {
+            const info = LANG_INFO[lang] || { flag: "🏳️", name: lang };
+            const btn = document.createElement('div');
+            btn.className = 'lang-btn';
+            if (lang === 'ko') btn.classList.add('kr-btn'); // 한국어 버튼 특별 표시
+            
+            btn.innerHTML = `<span class="flag">${info.flag}</span><span>${info.name}</span>`;
+            
+            btn.onclick = () => {
+                playAudio(item.audio[lang], item.texts[lang], btn);
+            };
+            grid.appendChild(btn);
+        });
+    }
+
+    function playAudio(path, text, btnElement) {
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+        }
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('playing'));
+
+        // 텍스트 표시
+        document.getElementById('text-target').innerText = text;
+
+        const fullPath = "audio/" + path;
+        currentAudio = new Audio(fullPath);
+        btnElement.classList.add('playing');
+        
+        currentAudio.play().catch(e => alert("오디오 재생 오류: " + e));
+        
+        currentAudio.onended = () => {
+            btnElement.classList.remove('playing');
+        };
+    }
+</script>
+
+</body>
+</html>
